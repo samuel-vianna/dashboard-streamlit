@@ -1,25 +1,18 @@
 version: "3.8"
 
 services:
-  backend:
-    build: ./backend
-    container_name: backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./app:/app # hot reload no código
-  db:
-    image: postgres:15
+  postgresql:
+    image: postgres:16-alpine
+    container_name: postgres_db
     restart: unless-stopped
     env_file:
       - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: appdb
-      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_dashboard_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -29,5 +22,4 @@ services:
       retries: 5
 
 volumes:
-  db_data:
-    driver: local
+  postgres_dashboard_data:
