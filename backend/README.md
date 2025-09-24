@@ -23,13 +23,16 @@ Arquivos relevantes:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source venv/bin/activate
 ```
 
 - Instalar as dependências
 
 ```bash
 pip install -r requirements.txt
+
+pip freeze > requirements.txt # copiar arquivos para dependências
+
 ```
 
 - Rodar o servidor
