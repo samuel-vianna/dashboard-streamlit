@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session
+from typing import Optional
+from app.models.feedback import Origin
 from app.services.database import get_session
 from app.schemas.nps import NPSCreate, NPSRead, NPSReadList, NPSUpdate
+from app.schemas.feedback import FeedbackSummary
 from app.usecases.nps import NPSUseCase
-from typing import List
 
 router = APIRouter(prefix="/nps", tags=["nps"])
 
@@ -16,6 +18,14 @@ def create(item: NPSCreate, session: Session = Depends(get_session)):
 @router.get("/", response_model=NPSReadList)
 def read(session: Session = Depends(get_session)):
     return useCase.get_nps(session)
+
+@router.get("/summary", response_model=FeedbackSummary)
+def read(
+    branch_id: Optional[int] = Query(None, description="ID da branch para filtro"),
+    origin: Optional[Origin] = Query(None, description="Origem do atendimento para filtro"),
+    session: Session = Depends(get_session)
+):
+    return useCase.get_summary(session, branch_id, origin)
 
 @router.put("/{id}", response_model=NPSRead)
 def update(branch: NPSUpdate, id: int, session: Session = Depends(get_session)):

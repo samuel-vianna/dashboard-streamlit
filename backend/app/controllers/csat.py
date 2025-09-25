@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session
-from app.schemas.csat import CSATCreate, CSATRead, CSATReadList, CSATUpdate
 from app.services.database import get_session
+from app.models.feedback import Origin
+from app.schemas.csat import CSATCreate, CSATRead, CSATReadList, CSATUpdate
+from app.schemas.feedback import FeedbackSummary
 from app.usecases.csat import CSATUseCase
-from typing import List
+from typing import Optional
 
 router = APIRouter(prefix="/csat", tags=["csat"])
 
@@ -16,6 +18,15 @@ def create(item: CSATCreate, session: Session = Depends(get_session)):
 @router.get("/", response_model=CSATReadList)
 def read(session: Session = Depends(get_session)):
     return useCase.get_csats(session)
+
+@router.get("/summary", response_model=FeedbackSummary)
+def read(
+    branch_id: Optional[int] = Query(None, description="ID da branch para filtro"),
+    origin: Optional[Origin] = Query(None, description="Origem do atendimento para filtro"),
+    session: Session = Depends(get_session)
+):
+    return useCase.get_summary(session, branch_id, origin)
+
 
 @router.put("/{id}", response_model=CSATRead)
 def update(branch: CSATUpdate, id: int, session: Session = Depends(get_session)):

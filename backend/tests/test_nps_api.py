@@ -32,3 +32,7 @@ def test_nps_score():
     res = client.post("/nps/", json={"score": 11, "comment": "good"})
     assert res.status_code == 400
     assert res.json()["detail"] == "NPS score must be between 0 and 10."
+    
+def test_nps_summary():
+    res = client.get("/nps/summary")
+    assert res.status_code == 200

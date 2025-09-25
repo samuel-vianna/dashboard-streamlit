@@ -32,3 +32,7 @@ def test_csat_score():
     res = client.post("/csat/", json={"score": 6, "comment": "good"})
     assert res.status_code == 400
     assert res.json()["detail"] == "CSAT score must be between 1 and 5."
+    
+def test_csat_summary():
+    res = client.get("/csat/summary")
+    assert res.status_code == 200
