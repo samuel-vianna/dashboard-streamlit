@@ -1,24 +1,24 @@
 from sqlmodel import Session
 from app.models.branch import Branch
 from app.schemas.branch import BranchCreate
-from app.repository.branch import BranchRepository
+class BranchUseCase:
+    def __init__(self, repository=None):
+        self.repository = repository
 
-repository = BranchRepository()
+    def create_branch(self, session: Session, branch_data: BranchCreate) -> Branch:
+        branch = Branch(**branch_data.model_dump())
+        return self.repository.create(session, branch)
 
-def create_branch(session: Session, branch_data: BranchCreate) -> Branch:
-    branch = Branch(**branch_data.model_dump())
-    return repository.create(session, branch)
+    def get_branches(self, session: Session):
+        return self.repository.get_all(session)
 
-def get_branches(session: Session):
-    return repository.get_all(session)
+    def get_branch_by_id(self, session: Session, id: int):
+        return self.repository.get_by_id(session, id)
 
-def get_branch_by_id(session: Session, id: int):
-    return repository.get_by_id(session, id)
+    def update_branch(self, session: Session, id: int, data: dict):
+        branch = Branch(**data.model_dump())
+        return self.repository.update_by_id(session, id, branch)
 
-def update_branch(session: Session, id: int, data: dict):
-    branch = Branch(**data.model_dump())
-    return repository.update_by_id(session, id, branch)
-
-def delete_branch(session: Session, id: int):
-    repository.delete(session, id)
-    return True
+    def delete_branch(self, session: Session, id: int):
+        self.repository.delete(session, id)
+        return True

@@ -1,34 +1,43 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
+from app.schemas.branch import BranchCreate, BranchUpdate
 from app.config.database import get_session
-from app.schemas.branch import BranchCreate, BranchRead, BranchUpdate
-from app.usecases.branch import (
-    create_branch,
-    get_branches,
-    get_branch_by_id,
-    update_branch,
-    delete_branch,
-)
-from typing import List
+from app.repository.branch import BranchRepository
+from app.usecases.branch import BranchUseCase
 
 router = APIRouter(prefix="/branches", tags=["branches"])
 
-@router.post("/", response_model=BranchRead)
-def create(branch: BranchCreate, session: Session = Depends(get_session)):
-    return create_branch(session, branch)
+repository = BranchRepository()
+useCase = BranchUseCase(repository)
 
-@router.get("/", response_model=List[BranchRead])
-def read(session: Session = Depends(get_session)):
-    return get_branches(session)
 
-@router.get("/{id}", response_model=BranchRead)
-def read_by_id(id: int, session: Session = Depends(get_session)):
-    return get_branch_by_id(session, id)
+@router.post("/", response_model=dict)
+def create(branch_data: BranchCreate, session: Session = Depends(get_session)):
+    try:
+        branch = useCase.create_branch(session, branch_data)
+        return {"id": branch.id, "name": branch.name}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-@router.put("/{id}", response_model=BranchRead)
-def update(branch: BranchUpdate, id: int, session: Session = Depends(get_session)):
-    return update_branch(session, id, branch)
 
-@router.delete("/{id}", response_model=None)
+@router.get("/", response_model=list)
+def list_branches(session: Session = Depends(get_session)):
+    return useCase.get_branches(session)
+
+
+@router.get("/{id}", response_model=dict)
+def retrieve(id: int, session: Session = Depends(get_session)):
+    branch = useCase.get_branch_by_id(session, id)
+    return {"id": branch.id, "name": branch.name}
+
+
+@router.put("/{id}", response_model=dict)
+def update(id: int, data: BranchUpdate, session: Session = Depends(get_session)):
+    branch = useCase.update_branch(session, id, data)
+    return {"id": branch.id, "name": branch.name}
+
+
+@router.delete("/{id}")
 def delete(id: int, session: Session = Depends(get_session)):
-   return delete_branch(session, id)
+    useCase.delete_branch(session, id)
+    return {"message": "deleted"}

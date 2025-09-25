@@ -2,23 +2,27 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.config.database import get_session
 from app.schemas.user import UserCreate, UserRead
-from app.usecases.user import create_user, get_users, delete_user, get_user_by_id
+from app.repository.user import UserRepository
+from app.usecases.user import UserUseCase
 from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+repository = UserRepository()
+useCase = UserUseCase(repository)
+
 @router.post("/", response_model=UserRead)
 def create(user: UserCreate, session: Session = Depends(get_session)):
-    return create_user(session, user)
+    return useCase.create_user(session, user)
 
 @router.get("/", response_model=List[UserRead])
 def read(session: Session = Depends(get_session)):
-    return get_users(session)
+    return useCase.get_users(session)
 
 @router.get("/{id}", response_model=UserRead)
 def read_by_id(id: int, session: Session = Depends(get_session)):
-    return get_user_by_id(session, id)
+    return useCase.get_user_by_id(session, id)
 
 @router.delete("/{id}", response_model=None)
 def delete(id: int, session: Session = Depends(get_session)):
-   return delete_user(session, id)
+    return useCase.delete_user(session, id)
