@@ -18,3 +18,7 @@ class CSATRead(SQLModel):
     comment: Optional[str] = None
     timestamp: datetime
     branch_id: Optional[int] = None
+
+class CSATReadList(SQLModel):
+    total: int
+    items: list[CSATRead]

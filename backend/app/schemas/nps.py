@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlmodel import SQLModel
 
 class NPSCreate(SQLModel):
-    score: int
+    score: int 
     comment: Optional[str] = None
     branch_id: Optional[int] = None
     timestamp: Optional[datetime] = None
@@ -18,3 +18,7 @@ class NPSRead(SQLModel):
     comment: Optional[str] = None
     timestamp: datetime
     branch_id: Optional[int] = None
+
+class NPSReadList(SQLModel):
+    total: int
+    items: list[NPSRead]

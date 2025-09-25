@@ -1,2 +1,13 @@
-/venv
-/.pytest_cache
+# Virtual environment
+venv/
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Pytest cache
+.pytest_cache/
+
+# Outros arquivos temporários
+*.log

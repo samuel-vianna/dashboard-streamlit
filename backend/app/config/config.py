@@ -1,8 +1,4 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
 class Settings:
     DB_USER: str = os.getenv("DB_USER", "admin")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD", "admin")

@@ -1,15 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
-from app.config.database import get_session
+from app.services.database import get_session
 from app.schemas.user import UserCreate, UserRead
-from app.repository.user import UserRepository
 from app.usecases.user import UserUseCase
 from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-repository = UserRepository()
-useCase = UserUseCase(repository)
+useCase = UserUseCase()
 
 @router.post("/", response_model=UserRead)
 def create(user: UserCreate, session: Session = Depends(get_session)):
