@@ -1,12 +1,15 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.config.database import init_db
 from app.controllers import user, branch, nps, csat
 
 app = FastAPI()
 
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     init_db()
+    yield
+
 
 app.include_router(branch.router)
 app.include_router(user.router)

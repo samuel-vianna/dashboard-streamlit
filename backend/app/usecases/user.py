@@ -7,7 +7,7 @@ from app.repository.user import UserRepository
 repository = UserRepository()
 
 def create_user(session: Session, user_data: UserCreate) -> User:
-    user = User(**user_data.dict())
+    user = User(**user_data.model_dump())
     return repository.create(session, user)
 
 def get_users(session: Session):
