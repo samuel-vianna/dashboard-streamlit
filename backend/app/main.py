@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.config.database import init_db
-from app.controllers import user, branch, nps, csat
+from app.controllers import user, branch, nps, csat, ai
 
 app = FastAPI()
 
@@ -10,7 +10,7 @@ async def lifespan(app: FastAPI):
     init_db()
     yield
 
-
+app.include_router(ai.router)
 app.include_router(branch.router)
 app.include_router(user.router)
 app.include_router(nps.router)
