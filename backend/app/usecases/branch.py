@@ -1,9 +1,10 @@
 from sqlmodel import Session
 from app.models.branch import Branch
+from app.repositories.branch import BranchRepository
 from app.schemas.branch import BranchCreate
 class BranchUseCase:
-    def __init__(self, repository=None):
-        self.repository = repository
+    def __init__(self):
+        self.repository = BranchRepository()
 
     def create_branch(self, session: Session, data: BranchCreate) -> Branch:
         branch = Branch(**data.model_dump())

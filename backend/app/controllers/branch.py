@@ -2,14 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.schemas.branch import BranchCreate, BranchRead, BranchUpdate
 from app.config.database import get_session
-from app.repositories.branch import BranchRepository
 from app.usecases.branch import BranchUseCase
 from typing import List
 
 router = APIRouter(prefix="/branches", tags=["branches"])
 
-repository = BranchRepository()
-useCase = BranchUseCase(repository)
+useCase = BranchUseCase()
 
 @router.post("/", response_model=BranchRead)
 def create(item: BranchCreate, session: Session = Depends(get_session)):

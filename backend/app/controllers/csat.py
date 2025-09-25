@@ -2,14 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.schemas.csat import CSATCreate, CSATRead, CSATUpdate
 from app.config.database import get_session
-from app.repositories.csat import CSATRepository
 from app.usecases.csat import CSATUseCase
 from typing import List
 
 router = APIRouter(prefix="/csat", tags=["csat"])
 
-repository = CSATRepository()
-useCase = CSATUseCase(repository)
+useCase = CSATUseCase()
 
 @router.post("/", response_model=CSATRead)
 def create(item: CSATCreate, session: Session = Depends(get_session)):

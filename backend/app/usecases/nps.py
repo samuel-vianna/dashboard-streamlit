@@ -2,10 +2,10 @@ from sqlmodel import Session
 from fastapi import HTTPException
 from app.models.nps import NPSFeedback
 from app.schemas.nps import NPSCreate, NPSUpdate
-
+from app.repositories.nps import NPSRepository
 class NPSUseCase:   
-    def __init__(self, repository=None):
-        self.repository = repository
+    def __init__(self):
+        self.repository = NPSRepository()
         
     def create_nps(self, session: Session, data: NPSCreate) -> NPSFeedback:
         if not 0 <= data.score <= 10:

@@ -1,10 +1,10 @@
 from sqlmodel import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
-
+from app.repositories.user import UserRepository
 class UserUseCase:
-    def __init__(self, repository=None):
-        self.repository = repository
+    def __init__(self):
+        self.repository = UserRepository()
 
     def create_user(self, session: Session, data: UserCreate) -> User:
         user = User(**data.model_dump())
