@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.schemas.branch import BranchCreate, BranchRead, BranchUpdate
-from app.config.database import get_session
+from app.services.database import get_session
 from app.usecases.branch import BranchUseCase
 from typing import List
 

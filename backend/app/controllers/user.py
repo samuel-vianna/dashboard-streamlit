@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
-from app.config.database import get_session
+from app.services.database import get_session
 from app.schemas.user import UserCreate, UserRead
 from app.usecases.user import UserUseCase
 from typing import List

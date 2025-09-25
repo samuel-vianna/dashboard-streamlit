@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
-from app.schemas.ai import FeedbackCreate
-from app.config.database import get_session
+from app.schemas.ai import FeedbackCreateInput, FeedbackCreateResponse
+from app.services.database import get_session
 from app.usecases.ai import AIUseCase
 from typing import Dict
 
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/ai", tags=["ai"])
 useCase = AIUseCase()
 
 @router.post("/generate")
-def generate_feedback(data: FeedbackCreate, session: Session = Depends(get_session)):
+def generate_feedback(data: FeedbackCreateInput, session: Session = Depends(get_session)) -> FeedbackCreateResponse:
     return useCase.generate_feedback(session, data)
 
 @router.post("/analyze")

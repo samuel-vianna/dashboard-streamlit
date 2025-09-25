@@ -18,13 +18,21 @@ class BaseRepository(Generic[T]):
         if item:
             return item
         else:
-            raise HTTPException(status_code=404, detail="{} not found".format(self.name))
+            raise HTTPException(status_code=404, detail=f"{self.name} not found")
 
     def create(self, session: Session, item: T) -> T:
         session.add(item)
         session.commit()
         session.refresh(item)
         return item
+    
+    def create_many(self, session: Session, items: List[T]) -> List[T]:
+        session.add_all(items)
+        session.commit()
+        for item in items:
+            session.refresh(item)
+        return items
+
 
     def update(self, session: Session, item: T) -> T:
         session.add(item)
@@ -35,7 +43,7 @@ class BaseRepository(Generic[T]):
     def update_by_id(self, session: Session, id: int, data: T) -> Optional[T]:
         item = session.get(self.model, id)
         if not item:
-            raise HTTPException(status_code=404, detail="{} not found".format(self.name))
+            raise HTTPException(status_code=404, detail=f"{self.name} not found")
         item_data = data.model_dump(exclude_unset=True)
         item.sqlmodel_update(item_data)
         session.add(item)
@@ -46,7 +54,7 @@ class BaseRepository(Generic[T]):
     def delete(self, session: Session, id: int) -> None:
         item = self.get_by_id(session, id)
         if not item:
-            raise HTTPException(status_code=404, detail="{} not found".format(self.name))
+            raise HTTPException(status_code=404, detail=f"{self.name} not found")
         session.delete(item)
         session.commit()
         return

@@ -1,7 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.config.database import init_db
+from app.services.database import init_db
 from app.controllers import user, branch, nps, csat, ai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 

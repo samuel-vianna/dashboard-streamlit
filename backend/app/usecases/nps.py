@@ -1,7 +1,7 @@
 from sqlmodel import Session
 from fastapi import HTTPException
 from app.models.nps import NPSFeedback
-from app.schemas.nps import NPSCreate, NPSUpdate
+from app.schemas.nps import NPSCreate, NPSReadList, NPSUpdate
 from app.repositories.nps import NPSRepository
 class NPSUseCase:   
     def __init__(self):
@@ -13,8 +13,9 @@ class NPSUseCase:
         nps = NPSFeedback(**data.model_dump())
         return self.repository.create(session, nps)
 
-    def get_nps(self, session: Session):
-        return self.repository.get_all(session)
+    def get_nps(self, session: Session) -> NPSReadList:
+        items = self.repository.get_all(session)
+        return {"total": len(items), "items": items}
 
     def update_nps(self, session: Session, id: int, data: NPSUpdate):
         nps = NPSFeedback(**data.model_dump())
