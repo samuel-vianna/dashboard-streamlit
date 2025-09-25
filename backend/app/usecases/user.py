@@ -6,8 +6,8 @@ class UserUseCase:
     def __init__(self, repository=None):
         self.repository = repository
 
-    def create_user(self, session: Session, user_data: UserCreate) -> User:
-        user = User(**user_data.model_dump())
+    def create_user(self, session: Session, data: UserCreate) -> User:
+        user = User(**data.model_dump())
         return self.repository.create(session, user)
 
     def get_users(self, session: Session):

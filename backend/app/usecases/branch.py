@@ -5,8 +5,8 @@ class BranchUseCase:
     def __init__(self, repository=None):
         self.repository = repository
 
-    def create_branch(self, session: Session, branch_data: BranchCreate) -> Branch:
-        branch = Branch(**branch_data.model_dump())
+    def create_branch(self, session: Session, data: BranchCreate) -> Branch:
+        branch = Branch(**data.model_dump())
         return self.repository.create(session, branch)
 
     def get_branches(self, session: Session):

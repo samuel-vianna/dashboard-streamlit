@@ -1,4 +1,5 @@
 from sqlmodel import Session
+from fastapi import HTTPException
 from app.models.csat import CSATFeedback
 from app.schemas.csat import CSATCreate
 
@@ -6,8 +7,10 @@ class CSATUseCase:
     def __init__(self, repository=None):
         self.repository = repository
 
-    def create_csat(self, session: Session, csat_data: CSATCreate) -> CSATFeedback:
-        csat = CSATFeedback(**csat_data.model_dump())
+    def create_csat(self, session: Session, data: CSATCreate) -> CSATFeedback:
+        if not 1 <= data.score <= 5:
+            raise HTTPException(status_code=400, detail="CSAT score must be between 1 and 5.")
+        csat = CSATFeedback(**data.model_dump())
         return self.repository.create(session, csat)
 
     def get_csats(self, session: Session):

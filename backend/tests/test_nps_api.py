@@ -26,3 +26,9 @@ def test_nps_crud():
     # delete
     res = client.delete(f"/nps/{nps_id}")
     assert res.status_code == 200
+
+
+def test_nps_score():
+    res = client.post("/nps/", json={"score": 11, "comment": "good"})
+    assert res.status_code == 400
+    assert res.json()["detail"] == "NPS score must be between 0 and 10."
