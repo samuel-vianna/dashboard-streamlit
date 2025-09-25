@@ -7,10 +7,10 @@ client = TestClient(app)
 
 def test_csat_crud():
     # create
-    res = client.post("/csat/", json={"score": 7, "comment": "ok"})
+    res = client.post("/csat/", json={"score": 3, "comment": "ok"})
     assert res.status_code == 200
     data = res.json()
-    assert data["score"] == 7
+    assert data["score"] == 3
     csat_id = data["id"]
 
     # list
@@ -26,3 +26,9 @@ def test_csat_crud():
     # delete
     res = client.delete(f"/csat/{csat_id}")
     assert res.status_code == 200
+
+
+def test_csat_score():
+    res = client.post("/csat/", json={"score": 6, "comment": "good"})
+    assert res.status_code == 400
+    assert res.json()["detail"] == "CSAT score must be between 1 and 5."
