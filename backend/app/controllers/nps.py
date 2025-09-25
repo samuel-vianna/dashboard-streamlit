@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.config.database import get_session
 from app.schemas.nps import NPSCreate, NPSRead, NPSUpdate
-from app.repository.nps import NPSRepository
+from app.repositories.nps import NPSRepository
 from app.usecases.nps import NPSUseCase
 from typing import List
 

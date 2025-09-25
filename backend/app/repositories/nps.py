@@ -1,7 +1,7 @@
 from typing import Type, Optional, List
 from sqlmodel import Session, select
 from app.models.nps import NPSFeedback
-from app.repository.base import BaseRepository
+from app.repositories.base import BaseRepository
 
 
 class NPSRepository(BaseRepository[NPSFeedback]):

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from app.schemas.branch import BranchCreate, BranchUpdate
 from app.config.database import get_session
-from app.repository.branch import BranchRepository
+from app.repositories.branch import BranchRepository
 from app.usecases.branch import BranchUseCase
 
 router = APIRouter(prefix="/branches", tags=["branches"])

@@ -1,7 +1,7 @@
 from typing import Optional
 from sqlmodel import Session, select
 from app.models.branch import Branch
-from app.repository.base import BaseRepository
+from app.repositories.base import BaseRepository
 
 class BranchRepository(BaseRepository[Branch]):
     def __init__(self):

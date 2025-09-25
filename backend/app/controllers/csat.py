@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.schemas.csat import CSATCreate, CSATRead, CSATUpdate
 from app.config.database import get_session
-from app.repository.csat import CSATRepository
+from app.repositories.csat import CSATRepository
 from app.usecases.csat import CSATUseCase
 from typing import List
 
