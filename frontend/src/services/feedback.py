@@ -1,15 +1,21 @@
 import requests
-from typing import TypedDict, Any
+from typing import TypedDict, Optional
 
 API_URL = "http://localhost:8000"
 
-class SummaryData(TypedDict):
+
+class SummaryInfo(TypedDict):
     total: int
     negative: int
     neutral: int
     positive: int
     score: float
-    details: list[dict[str, Any]]
+
+class SummaryDetails(SummaryInfo): 
+    origin: str
+    
+class SummaryData(SummaryInfo):
+    details: list[SummaryDetails]
 
 class FeedbackService:
     def __init__(self, endpoint: str):
@@ -18,5 +24,8 @@ class FeedbackService:
     def get_all(self):
         return requests.get(self.api_url).json()
     
-    def get_summary(self) -> SummaryData:
-        return requests.get(f'{self.api_url}/summary').json()
+    def get_summary(self, branch_id: Optional[int] = None) -> SummaryData:
+        return requests.get(f'{self.api_url}/summary', params={"branch_id": branch_id}).json()
+    
+    def get_branches(self) -> list[str]:
+        return requests.get(f'{self.api_url}/branches').json()

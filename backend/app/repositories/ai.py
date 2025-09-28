@@ -14,10 +14,14 @@ class AiRepository():
                 "- Se for CSAT: notas de 1 a 5.\n"
                 "Cada avaliação deve ter uma nota e um comentário coerente.\n"
                 "Se houver contexto, use-o para inspirar os comentários.\n"
+                "se houver branch_id, gere comentários utilizando essa branch_id.\n"
+                "Se houver data de envio, gere comentários com datas aleatórias de no máximo {max_time_diff} horas de diferença.\n"
+                "Se houver data de envio, os comentários devem ser gerados com datas anteriores a essa data.\n"
+                "Os comentários gerados deve possuir origens variadas.\n"
                 "Se não houver, invente comentários plausíveis."
             )
             
-            user_prompt = ("user", "Contexto: {context}")
+            user_prompt = ("user", "Contexto: {context}, data de envio: {date}, branch_id: {branch_id}")
             
             prompt = [
                 ("system", system_prompt),
@@ -28,6 +32,9 @@ class AiRepository():
                 "type": data.type,
                 "amount": data.amount,
                 "context": data.context or "Sem contexto",
+                "date": data.date or "Sem data de envio",
+                "max_time_diff": data.max_time_diff or "Sem data de envio",
+                "branch_id": data.branch_id or "Sem branch_id",
                 }
 
             return self.service.request(prompt, AIFeedbackOutputResponse, input)
