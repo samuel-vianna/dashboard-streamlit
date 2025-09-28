@@ -1,0 +1,11 @@
+import requests
+
+API_URL = "http://localhost:8000"
+
+class AIService:
+    def __init__(self):
+        self.api_url = f'{API_URL}'
+    
+    def generate_feedback(self, data: dict) -> str:
+        return requests.post(f'{self.api_url}/ai/analyze', json=data).json()
+    

@@ -1,11 +1,13 @@
 from sqlmodel import Session
 from fastapi import HTTPException
-from typing import Optional
+from typing import Optional, Literal
 from app.models.csat import CSATFeedback
 from app.schemas.csat import CSATCreate, CSATReadList
 from app.repositories.csat import CSATRepository
 from app.repositories.branch import BranchRepository
 from app.utils.calculate_csat import calculate_csat
+from datetime import datetime
+
 class CSATUseCase:
     def __init__(self):
         self.repository = CSATRepository()
@@ -37,8 +39,17 @@ class CSATUseCase:
         self.repository.delete(session, id)
         return True
 
-    def get_summary(self, session: Session, branch_id: Optional[int] = None, origin: Optional[str] = None):
-        results = self.repository.get_summary(session, branch_id, origin)
+    def get_summary(
+        self,
+        session: Session,
+        branch_id: Optional[int] = None,
+        origin: Optional[str] = None,
+        period: Optional[Literal["day", "week", "month"]] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+        ):
+        results = self.repository.get_summary(session, branch_id, origin, period, start_date, end_date)
+        
         # calculate total summing all origins
         total = sum(item["total"] for item in results)
         positive = sum(item["positive"] for item in results)

@@ -17,7 +17,6 @@ class AIUseCase:
         self.csat_repository = CSATRepository()
 
     def generate_feedback(self, session: Session, data: FeedbackCreateInput):
-        print(data)
         response = self.repository.generate(data).feedbacks
         
         if len(response) == 0:

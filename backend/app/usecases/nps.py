@@ -1,11 +1,13 @@
 from sqlmodel import Session
 from fastapi import HTTPException
-from typing import Optional
+from typing import Optional, Literal
 from app.models.nps import NPSFeedback
 from app.schemas.nps import NPSCreate, NPSReadList, NPSUpdate
 from app.repositories.nps import NPSRepository
 from app.repositories.branch import BranchRepository
 from app.utils.calculate_nps import calculate_nps
+from datetime import datetime
+
 class NPSUseCase:   
     def __init__(self):
         self.repository = NPSRepository()
@@ -34,8 +36,17 @@ class NPSUseCase:
         self.repository.delete(session, id)
         return True
 
-    def get_summary(self, session: Session, branch_id: Optional[int] = None, origin: Optional[str] = None):
-        results = self.repository.get_summary(session, branch_id, origin)
+    def get_summary(
+        self,
+        session: Session,
+        branch_id: Optional[int] = None,
+        origin: Optional[str] = None,
+        period: Optional[Literal["day", "week", "month"]] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+        ):
+        results = self.repository.get_summary(session, branch_id, origin, period, start_date, end_date)
+        
         # calculate total summing all origins
         total = sum(item["total"] for item in results)
         positive = sum(item["positive"] for item in results)

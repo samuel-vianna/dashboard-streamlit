@@ -13,6 +13,11 @@ class Origin(str, Enum):
     PRESENCIAL = "presencial"
 
 
+class ScoreCategories:
+    negative: list[int]
+    neutral: list[int]
+    positive: list[int]
+
 class Feedback(SQLModel):
     score: int
     comment: Optional[str] = None

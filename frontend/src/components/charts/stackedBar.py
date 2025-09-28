@@ -1,23 +1,31 @@
 import streamlit as st
-import plotly.express as px
 import plotly.graph_objects as go
 from services.feedback import SummaryData
+
 
 def stackedBarChart(data: SummaryData, key: str = "stacked_bar_chart"):
     # -----------------------------------
     # Barras horizontais empilhadas
     # -----------------------------------
-    origins = []
-    detratores = []
-    neutros = []
-    promotores = []
+    rows = []
 
     for d in data["details"]:
         total = d["total"] or 1
-        origins.append(d["origin"] if d["origin"] else "Indefinido")
-        detratores.append(d["negative"] / total * 100)
-        neutros.append(d["neutral"] / total * 100)
-        promotores.append(d["positive"] / total * 100)
+        origin = d["origin"] if d["origin"] else "Indefinido"
+        rows.append({
+            "origin": origin,
+            "detratores": round(d["negative"] / total * 100, 2),
+            "neutros": round(d["neutral"] / total * 100, 2),
+            "promotores": round(d["positive"] / total * 100, 2),
+        })
+
+    # Ordena pela origem (alfabética)
+    rows.sort(key=lambda r: r["origin"], reverse=True)
+
+    origins = [r["origin"] for r in rows]
+    detratores = [r["detratores"] for r in rows]
+    neutros = [r["neutros"] for r in rows]
+    promotores = [r["promotores"] for r in rows]
 
     fig_bar = go.Figure()
 

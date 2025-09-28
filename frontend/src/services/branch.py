@@ -8,3 +8,14 @@ class BranchService:
     
     def get_branches(self) -> list[str]:
         return requests.get(f'{self.api_url}').json()
+    
+    def get_origins(self) -> list[str]:
+        return [
+            "site",
+            "app",
+            "telefone",
+            "email",
+            "chat",
+            "presencial"
+        ]
+    
