@@ -14,9 +14,9 @@ def stackedBarChart(data: SummaryData, key: str = "stacked_bar_chart"):
         origin = d["origin"] if d["origin"] else "Indefinido"
         rows.append({
             "origin": origin,
-            "detratores": d["negative"] / total * 100,
-            "neutros": d["neutral"] / total * 100,
-            "promotores": d["positive"] / total * 100,
+            "detratores": round(d["negative"] / total * 100, 2),
+            "neutros": round(d["neutral"] / total * 100, 2),
+            "promotores": round(d["positive"] / total * 100, 2),
         })
 
     # Ordena pela origem (alfabética)

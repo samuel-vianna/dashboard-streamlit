@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
 from services.feedback import FeedbackService
 from components.charts import donutChart, stackedBarChart
 from components.charts import barChart
-from typing import Optional
+from components.charts import chartOverTime
+from services.ai import AIService
+
+ai_service = AIService()
 
 def summary(service: FeedbackService, title: str):    
     
@@ -26,11 +28,12 @@ def summary(service: FeedbackService, title: str):
     # start and end dates
     start_date = st.session_state.get("start_date", None)
     end_date = st.session_state.get("end_date", None)
-    
-    print(start_date)
-    print(end_date)
 
     data = service.get_summary(branch_id, origin, period_value, start_date, end_date)
+    
+    # Feedback gerado com IA
+    feedback = ai_service.generate_feedback(data)
+    feedbackMessage = feedback['summary'] if feedback else "Sem feedback gerado."
 
     # ------------------------------
     # Totais
@@ -49,12 +52,21 @@ def summary(service: FeedbackService, title: str):
         df = pd.DataFrame(data["details"])
         df = df[["origin", "total", "negative", "neutral", "positive"]]
 
+        # ------------------------------
+        # Resumo com IA
+        # ------------------------------
+        st.subheader("🤖 Resumo com IA")
+        
+        st.write(f"Resumo gerado com inteligência artificial a partir dos dados obtidos.")
+        
+        st.write(feedbackMessage)
         
         # ------------------------------
         # Distribuição de notas
         # ------------------------------
         st.subheader("📊 Distribuição de Notas")
-        # st.dataframe(df)
+        
+        chartOverTime(data)
         
         container = st.container(horizontal=True)
         with container:
@@ -71,7 +83,5 @@ def summary(service: FeedbackService, title: str):
             barChart(data, f'bar_chart_{title}')
             
         
-        
-
     else:
         st.write("Sem dados disponíveis para os filtros selecionados.")
