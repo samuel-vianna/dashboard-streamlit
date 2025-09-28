@@ -6,10 +6,14 @@ from components.charts import donutChart, stackedBarChart
 from components.charts import barChart
 from typing import Optional
 
-def summary(service: FeedbackService, title: str, branch_id: Optional[int]):    
-    # Pega dados da API
+def summary(service: FeedbackService, title: str):    
+    
+    # Pegar dados da API
+    branch = st.session_state.get("branch", None)
+    branch_id = branch["id"] if branch else None
+    origin = st.session_state.get("origin", None)
 
-    data = service.get_summary(branch_id)
+    data = service.get_summary(branch_id, origin)
 
     # Container com métricas
     row = st.container(horizontal=True)
@@ -34,9 +38,9 @@ def summary(service: FeedbackService, title: str, branch_id: Optional[int]):
         df = df[["origin", "total", "negative", "neutral", "positive"]]
 
         
-        #-------------------------------------------------------------------------------
+        # ------------------------------
         # Distribuição de notas
-        #-------------------------------------------------------------------------------
+        # ------------------------------
         st.subheader("📊 Distribuição de Notas")
         # st.dataframe(df)
         
@@ -45,9 +49,9 @@ def summary(service: FeedbackService, title: str, branch_id: Optional[int]):
             donutChart(data, f'donut_chart_{title}')
             stackedBarChart(data, f'stacked_bar_chart_{title}')
             
-        #-------------------------------------------------------------------------------
+        # ------------------------------
         # Dados sobre canais
-        #-------------------------------------------------------------------------------
+        # ------------------------------
         st.subheader("📊 Distribuição de avaliações por canal")
         
         container = st.container(horizontal=True)
@@ -58,4 +62,4 @@ def summary(service: FeedbackService, title: str, branch_id: Optional[int]):
         
 
     else:
-        st.write("Nenhum score disponível para gerar gráfico.")
+        st.write("Sem dados disponíveis para os filtros selecionados.")

@@ -24,8 +24,12 @@ class FeedbackService:
     def get_all(self):
         return requests.get(self.api_url).json()
     
-    def get_summary(self, branch_id: Optional[int] = None) -> SummaryData:
-        return requests.get(f'{self.api_url}/summary', params={"branch_id": branch_id}).json()
+    def get_summary(self, branch_id: Optional[int] = None, origin: Optional[str] = None) -> SummaryData:
+        params = {
+            "branch_id": branch_id,
+            "origin": origin
+        }
+        return requests.get(f'{self.api_url}/summary', params=params).json()
     
     def get_branches(self) -> list[str]:
         return requests.get(f'{self.api_url}/branches').json()
