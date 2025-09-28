@@ -29,9 +29,9 @@ class NPSRepository(BaseRepository[NPSFeedback]):
         select_columns = [
             NPSFeedback.origin,
             func.count().label("total"),
-            func.count(case((NPSFeedback.score.between(1, 2), 1))).label("negative"),
-            func.count(case((NPSFeedback.score.in_([3]), 1))).label("neutral"),
-            func.count(case((NPSFeedback.score.in_([4, 5]), 1))).label("positive"),
+            func.count(case((NPSFeedback.score.between(0, 6), 1))).label("negative"),
+            func.count(case((NPSFeedback.score.in_([7,8]), 1))).label("neutral"),
+            func.count(case((NPSFeedback.score.in_([9, 10]), 1))).label("positive"),
         ]
         
         if time_group is not None:
@@ -56,7 +56,7 @@ class NPSRepository(BaseRepository[NPSFeedback]):
         return [
             {
                 "origin": r.origin,
-                "period": r.period if r.period else None,
+                "period": r.period if group_by else None,
                 "total": r.total,
                 "negative": r.negative,
                 "neutral": r.neutral,

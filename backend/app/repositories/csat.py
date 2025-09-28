@@ -55,7 +55,7 @@ class CSATRepository(BaseRepository[CSATFeedback]):
         return [
             {
                 "origin": r.origin,
-                "period": r.period if r.period else None,
+                "period": r.period if group_by else None,
                 "total": r.total,
                 "negative": r.negative,
                 "neutral": r.neutral,

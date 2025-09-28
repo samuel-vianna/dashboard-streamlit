@@ -40,7 +40,7 @@ class NPSUseCase:
         session: Session,
         branch_id: Optional[int] = None,
         origin: Optional[str] = None,
-        period: Optional[Literal["day", "week", "month"]] = 'day'
+        period: Optional[Literal["day", "week", "month"]] = None
         ):
         results = self.repository.get_summary(session, branch_id, origin, period)
         
