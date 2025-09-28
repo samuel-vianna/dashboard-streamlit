@@ -35,6 +35,7 @@ class Summary(SQLModel):
     
 class DetailsSummary(Summary):
     origin: Optional[str] = None
+    period: Optional[datetime] = None
 
 class FeedbackSummary(Summary):
     details: list[DetailsSummary]
