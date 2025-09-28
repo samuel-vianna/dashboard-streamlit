@@ -3,6 +3,7 @@ from typing import Optional, Literal
 from sqlmodel import SQLModel, Session, select, func, case
 from app.repositories.base import BaseRepository
 from app.models.feedback import ScoreCategories
+from datetime import datetime, timedelta
 
 T = TypeVar("T", bound=SQLModel)
 
@@ -18,6 +19,8 @@ class FeedbackRepository(BaseRepository[T]):
         branch_id: Optional[int] = None,
         origin: Optional[str] = None,
         group_by: Optional[Literal["day", "week", "month"]] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
     ):
         
         # Definir grupo de tempo
@@ -48,6 +51,13 @@ class FeedbackRepository(BaseRepository[T]):
 
         if origin is not None:
             query = query.where(self.model.origin == origin)
+            
+        if start_date is not None:
+            query = query.where(self.model.timestamp >= start_date)
+
+        if end_date is not None:
+            end_date = datetime.combine(end_date, datetime.min.time()) + timedelta(days=1)
+            query = query.where(self.model.timestamp < end_date)
         
         # Agrupamento
         group_by_cols = [self.model.origin]

@@ -6,6 +6,7 @@ from app.schemas.csat import CSATCreate, CSATReadList
 from app.repositories.csat import CSATRepository
 from app.repositories.branch import BranchRepository
 from app.utils.calculate_csat import calculate_csat
+from datetime import datetime
 
 class CSATUseCase:
     def __init__(self):
@@ -43,9 +44,11 @@ class CSATUseCase:
         session: Session,
         branch_id: Optional[int] = None,
         origin: Optional[str] = None,
-        period: Optional[Literal["day", "week", "month"]] = None
+        period: Optional[Literal["day", "week", "month"]] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
         ):
-        results = self.repository.get_summary(session, branch_id, origin, period)
+        results = self.repository.get_summary(session, branch_id, origin, period, start_date, end_date)
         
         # calculate total summing all origins
         total = sum(item["total"] for item in results)
