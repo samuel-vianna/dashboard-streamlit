@@ -3,11 +3,13 @@ import pandas as pd
 import altair as alt
 from services.feedback import FeedbackService
 from components.charts import donutChart, stackedBarChart
+from components.charts import barChart
+from typing import Optional
 
-def summary(service: FeedbackService, title: str):    
+def summary(service: FeedbackService, title: str, branch_id: Optional[int]):    
     # Pega dados da API
 
-    data = service.get_summary()
+    data = service.get_summary(branch_id)
 
     # Container com métricas
     row = st.container(horizontal=True)
@@ -32,6 +34,9 @@ def summary(service: FeedbackService, title: str):
         df = df[["origin", "total", "negative", "neutral", "positive"]]
 
         
+        #-------------------------------------------------------------------------------
+        # Distribuição de notas
+        #-------------------------------------------------------------------------------
         st.subheader("📊 Distribuição de Notas")
         # st.dataframe(df)
         
@@ -39,6 +44,17 @@ def summary(service: FeedbackService, title: str):
         with container:
             donutChart(data, f'donut_chart_{title}')
             stackedBarChart(data, f'stacked_bar_chart_{title}')
+            
+        #-------------------------------------------------------------------------------
+        # Dados sobre canais
+        #-------------------------------------------------------------------------------
+        st.subheader("📊 Distribuição de avaliações por canal")
+        
+        container = st.container(horizontal=True)
+        with container:
+            barChart(data, f'bar_chart_{title}')
+            
+        
         
 
     else:
