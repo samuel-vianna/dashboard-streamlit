@@ -47,7 +47,6 @@ with tab3:
         nps_data = st.session_state.get("nps_data", None)
         csat_data = st.session_state.get("csat_data", None)
         feedback = ai_service.generate_feedback(nps_data, csat_data)
-        print(feedback)
         
     try:
         feedbackMessage = feedback.get("summary") if feedback else "Sem feedback gerado."
