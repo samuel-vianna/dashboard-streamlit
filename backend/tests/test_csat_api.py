@@ -36,3 +36,7 @@ def test_csat_score():
 def test_csat_summary():
     res = client.get("/csat/summary")
     assert res.status_code == 200
+    
+def test_csat_summary_sentiments():
+    res = client.get("/csat/summary/sentiments")
+    assert res.status_code == 200

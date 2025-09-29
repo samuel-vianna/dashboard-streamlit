@@ -36,6 +36,9 @@ class NPSUseCase:
         self.repository.delete(session, id)
         return True
 
+    def get_sentiments_summary(self, session: Session):
+        return self.repository.get_sentiment_count(session)
+
     def get_summary(
         self,
         session: Session,

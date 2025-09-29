@@ -32,6 +32,11 @@ def read(
 ):
     return useCase.get_summary(session, branch_id, origin, period, start_date, end_date)
 
+@router.get("/summary/sentiments", response_model=dict[str, int])
+def read(session: Session = Depends(get_session)
+):
+    return useCase.get_sentiments_summary(session)
+
 @router.put("/{id}", response_model=NPSRead)
 def update(branch: NPSUpdate, id: int, session: Session = Depends(get_session)):
     return useCase.update_nps(session, id, branch)

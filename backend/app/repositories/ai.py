@@ -1,4 +1,4 @@
-from app.schemas.ai import FeedbackCreateInput, AIFeedbackOutputResponse, AIAnalyzeInput, AIAnalyzeOutputResponse
+from app.schemas.ai import FeedbackCreateInput, AIFeedbackOutputResponse, AIAnalyzeInput, AIAnalyzeOutputResponse, AICategorizeOutputResponse
 from app.services.llm import LLMService
 from fastapi import HTTPException
 
@@ -73,7 +73,36 @@ class AiRepository():
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
         
 
-    def categorize(self):
-        print('To do...')
-        return 
+    def categorize(self, comments: list[str]):
+        try: 
+            sentiments = [
+                "feliz", "grato", "confuso", "frustrado", "impaciente",
+                "triste", "agradecido", "surpreso", "estressado", "indiferente"
+                ]
+
+            
+            system_prompt = (
+                "Você é um assistente especializado em análise de feedback.\n"
+                "Sua tarefa é analisar os comentários fornecidos de NPS e CSAT e categorizar os comentários.\n"
+                " - Analise os comentários e o classifique de acordo com sentimento.\n"
+                " - Lista de possíveis sentimentos: {sentiments}\n"
+                " - A lista deve possuir relação de 1 para 1. Ou seja, a mesma quantidade de comentários fornecidos deve ser a quantidade de sentimentos, retornados na mesma ordem.\n"
+            )
+            
+            user_prompt = ("user", "comentarios: {comments}")
+            
+            prompt = [
+                ("system", system_prompt),
+                user_prompt
+            ]
+            
+            input = {
+                "comments": comments,
+                "sentiments": sentiments
+                }
+
+            return self.service.request(prompt, AICategorizeOutputResponse, input)
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
     

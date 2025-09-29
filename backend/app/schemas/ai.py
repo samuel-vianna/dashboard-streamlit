@@ -20,11 +20,17 @@ class AIFeedbackOutputResponse(BaseModel):
 class AIAnalyzeOutputResponse(BaseModel):
     summary: str
     
+class AICategorizeOutputResponse(BaseModel):
+    sentiments: List[str]
+    
 # API Schemas
 
 class AIAnalyzeInput(SQLModel):
     nps_data: FeedbackSummary
     csat_data: FeedbackSummary
+    
+# class AICategorizeInput(SQLModel):
+#     comments: List[str]
 
 class FeedbackCreateInput(SQLModel):
     type: Literal["nps", 'csat']

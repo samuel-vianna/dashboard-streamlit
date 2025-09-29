@@ -12,6 +12,27 @@ class FeedbackRepository(BaseRepository[T]):
         self.model = model
         self.name = name
         self.scores = scores
+        
+    # get first 100 comments that the sentiment field is null
+    def get_uncategorized_comments(self, session: Session, limit: int = 100):
+        return session.exec(
+            select(self.model)
+            .where(self.model.sentiment.is_(None))
+            .limit(limit)
+            ).all()
+        
+
+    def get_sentiment_count(self, session: Session):
+        results = session.exec(
+            select(
+                self.model.sentiment,
+                func.count().label("count")
+            )
+            .group_by(self.model.sentiment)
+        ).all()
+
+        return {sentiment: count for sentiment, count in results}
+
 
     def get_summary(
         self,
