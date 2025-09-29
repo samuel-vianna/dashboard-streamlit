@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.services.database.database import init_db
-from app.controllers import user, branch, nps, csat, ai
+from app.controllers import user, branch, nps, csat, ai, auth
 from dotenv import load_dotenv
 from app.services.scheduler import start_scheduler, stop_scheduler
 
@@ -25,6 +25,7 @@ app.include_router(branch.router)
 app.include_router(user.router)
 app.include_router(nps.router)
 app.include_router(csat.router)
+app.include_router(auth.router)
 
 @app.get("/ping")
 def ping():
