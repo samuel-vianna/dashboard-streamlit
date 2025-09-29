@@ -11,7 +11,7 @@ def AISummaryTab(ai_service: AIService):
     with st.spinner("Gerando feedback com inteligência artificial…"):
         nps_data = st.session_state.get("nps_data", None)
         csat_data = st.session_state.get("csat_data", None)
-        feedback = ai_service.generate_feedback(nps_data, csat_data)
+        feedback = ai_service.analyze_feedback(nps_data, csat_data)
         
     try:
         feedbackMessage = feedback.get("summary") if feedback else "Sem feedback gerado."

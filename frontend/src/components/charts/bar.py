@@ -14,7 +14,7 @@ def barChart(
     color: str = "steelblue"
 ):
     if data is None or data.empty:
-        st.write("Nenhum dado disponível para o gráfico.")
+        st.write(f"Nenhum dado disponível para o gráfico: {title}")
         return
 
     df = data.copy()

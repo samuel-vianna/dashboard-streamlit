@@ -6,6 +6,9 @@ class BranchService:
     def __init__(self):
         self.api_url = f'{API_URL}/branches'
     
+    def create_branch(self, name: str):
+        return requests.post(f'{self.api_url}', json={"name": name})
+    
     def get_branches(self) -> list[str]:
         return requests.get(f'{self.api_url}').json()
     
