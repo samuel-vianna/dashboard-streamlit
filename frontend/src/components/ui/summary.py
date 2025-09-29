@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
+from time import sleep
 from services.feedback import FeedbackService
 from components.charts import donutChart, stackedBarChart
 from components.charts import barChart
 from components.charts import chartOverTime
 from services.ai import AIService
+
 
 ai_service = AIService()
 
@@ -29,59 +31,47 @@ def summary(service: FeedbackService, title: str):
     start_date = st.session_state.get("start_date", None)
     end_date = st.session_state.get("end_date", None)
 
-    data = service.get_summary(branch_id, origin, period_value, start_date, end_date)
-    
-    # Feedback gerado com IA
-    feedback = ai_service.generate_feedback(data)
-    feedbackMessage = feedback['summary'] if feedback else "Sem feedback gerado."
-
-    # ------------------------------
-    # Totais
-    # ------------------------------
-    row = st.container(horizontal=True)
-
-    with row:
-        st.metric("Total", data['total'], border=True)
-        st.metric("Score", f'{data["score"]:.2f}%', border=True)
-        
-    # ------------------------------
-    # Criar DataFrame e bandas
-    # ------------------------------
-    if "details" in data and len(data["details"]) > 0:
-        # Extrair scores
-        df = pd.DataFrame(data["details"])
-        df = df[["origin", "total", "negative", "neutral", "positive"]]
+    with st.spinner("Obtendo dados..."):
+        data = service.get_summary(branch_id, origin, period_value, start_date, end_date)
+        st.session_state[f"{title.lower()}_data"] = data
 
         # ------------------------------
-        # Resumo com IA
+        # Totais
         # ------------------------------
-        st.subheader("🤖 Resumo com IA")
-        
-        st.write(f"Resumo gerado com inteligência artificial a partir dos dados obtidos.")
-        
-        st.write(feedbackMessage)
-        
-        # ------------------------------
-        # Distribuição de notas
-        # ------------------------------
-        st.subheader("📊 Distribuição de Notas")
-        
-        chartOverTime(data)
-        
-        container = st.container(horizontal=True)
-        with container:
-            donutChart(data, f'donut_chart_{title}')
-            stackedBarChart(data, f'stacked_bar_chart_{title}')
+        row = st.container(horizontal=True)
+
+        with row:
+            st.metric("Total", data['total'], border=True)
+            st.metric("Score", f'{data["score"]:.2f}%', border=True)
             
         # ------------------------------
-        # Dados sobre canais
+        # Criar DataFrame e bandas
         # ------------------------------
-        st.subheader("📊 Distribuição de avaliações por canal")
-        
-        container = st.container(horizontal=True)
-        with container:
-            barChart(data, f'bar_chart_{title}')
+        if "details" in data and len(data["details"]) > 0:
+            # Extrair scores
+            df = pd.DataFrame(data["details"])
+            df = df[["origin", "total", "negative", "neutral", "positive"]]
             
-        
-    else:
-        st.write("Sem dados disponíveis para os filtros selecionados.")
+            # ------------------------------
+            # Distribuição de notas
+            # ------------------------------
+            st.subheader("📊 Distribuição de Notas")
+            
+            chartOverTime(data)
+            
+            container = st.container(horizontal=True)
+            with container:
+                donutChart(data, f'donut_chart_{title}')
+                stackedBarChart(data, f'stacked_bar_chart_{title}')
+                
+            # ------------------------------
+            # Dados sobre canais
+            # ------------------------------
+            st.subheader("📊 Distribuição de avaliações por canal")
+            
+            container = st.container(horizontal=True)
+            with container:
+                barChart(data, f'bar_chart_{title}')     
+            
+        else:
+            st.write("Sem dados disponíveis para os filtros selecionados.")
