@@ -2,9 +2,12 @@ import streamlit as st
 from datetime import datetime
 from services.ai import AIService
 from services.branch import BranchService
+from components.ui.authRoute import AuthRoute
 
 ai_service = AIService()
 branch_service = BranchService()
+
+AuthRoute()
 
 st.title("🤖 Gerar Feedback com IA")
 

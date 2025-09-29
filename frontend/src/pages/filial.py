@@ -1,8 +1,11 @@
 import streamlit as st
 from datetime import datetime
 from services.branch import BranchService
+from components.ui.authRoute import AuthRoute
 
 branch_service = BranchService()
+
+AuthRoute()
 
 st.title("🏬 Cadastrar Filial")
 

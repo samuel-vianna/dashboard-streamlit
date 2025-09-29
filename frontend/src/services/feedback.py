@@ -1,4 +1,5 @@
 import requests
+from .auth import AuthService
 from typing import TypedDict, Optional, Literal
 from datetime import datetime
 
@@ -23,7 +24,7 @@ class FeedbackService:
         self.api_url = f'{API_URL}/{endpoint}'
     
     def get_all(self):
-        return requests.get(self.api_url).json()
+        return requests.get(self.api_url, headers=AuthService.get_headers()).json()
     
     def get_sentiments(
         self,
@@ -38,8 +39,7 @@ class FeedbackService:
             "start_date": start_date,
             "end_date": end_date
         }
-        
-        return requests.get(f'{self.api_url}/summary/sentiments', params=params).json()
+        return requests.get(f'{self.api_url}/summary/sentiments', params=params, headers=AuthService.get_headers()).json()
     
     def get_summary(
         self,
@@ -55,8 +55,8 @@ class FeedbackService:
             "period": period,
             "start_date": start_date,
             "end_date": end_date
-        }
-        return requests.get(f'{self.api_url}/summary', params=params).json()
+    }
+        return requests.get(f'{self.api_url}/summary', params=params, headers=AuthService.get_headers()).json()
     
     def get_branches(self) -> list[str]:
-        return requests.get(f'{self.api_url}/branches').json()
+        return requests.get(f'{self.api_url}/branches', headers=AuthService.get_headers()).json()
