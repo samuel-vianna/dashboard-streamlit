@@ -2,7 +2,7 @@ from sqlmodel import Session
 from fastapi import HTTPException
 from app.schemas.ai import FeedbackCreateInput
 from app.repositories.ai import AiRepository
-from typing import Dict
+from typing import Dict, Literal
 
 from app.repositories.nps import NPSRepository
 from app.models.nps import NPSFeedback
@@ -40,9 +40,9 @@ class AIUseCase:
                 'total': len(saved_items),
                 'items': saved_items}
 
-    def analyze_feedback(self, session: Session, data: Dict):
-        feedback = self.repository.analyze()
-        return {'summary': feedback}
+    def analyze_feedback(self,data: Dict):
+        feedback = self.repository.analyze(data)
+        return feedback
 
     def categorize_feedback(self, session: Session, data: Dict):
         self.repository.categorize()

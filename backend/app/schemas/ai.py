@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlmodel import SQLModel
 from pydantic import BaseModel, Field
 from app.models.feedback import Origin
+from app.schemas.feedback import FeedbackSummary
 
 # AI Output
 class AIFeedbackOutput(BaseModel):
@@ -16,7 +17,14 @@ class AIFeedbackOutputResponse(BaseModel):
     type: Literal["nps", 'csat']
     feedbacks: List[AIFeedbackOutput]
     
+class AIAnalyzeOutputResponse(BaseModel):
+    summary: str
+    
 # API Schemas
+
+class AIAnalyzeInput(SQLModel):
+    nps_data: FeedbackSummary
+    csat_data: FeedbackSummary
 
 class FeedbackCreateInput(SQLModel):
     type: Literal["nps", 'csat']
