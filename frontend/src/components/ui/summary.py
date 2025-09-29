@@ -16,7 +16,7 @@ def summary(service: FeedbackService, title: str):
     # Pegar dados da API
     # ------------------------------
     
-    # Brandh
+    # Branch
     branch = st.session_state.get("branch", None)
     branch_id = branch["id"] if branch else None
     

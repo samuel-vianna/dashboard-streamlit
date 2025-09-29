@@ -22,15 +22,38 @@ class FeedbackRepository(BaseRepository[T]):
             ).all()
         
 
-    def get_sentiment_count(self, session: Session):
-        results = session.exec(
+    def get_sentiment_count(
+        self,
+        session: Session,
+        branch_id: Optional[int] = None,
+        origin: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+    ):
+        
+        query = (
             select(
                 self.model.sentiment,
                 func.count().label("count")
             )
             .group_by(self.model.sentiment)
-        ).all()
+        )
+        
+        if branch_id is not None:
+            query = query.where(self.model.branch_id == branch_id)
 
+        if origin is not None:
+            query = query.where(self.model.origin == origin)
+            
+        if start_date is not None:
+            query = query.where(self.model.timestamp >= start_date)
+
+        if end_date is not None:
+            end_date = datetime.combine(end_date, datetime.min.time()) + timedelta(days=1)
+            query = query.where(self.model.timestamp < end_date)
+
+        results = session.exec(query).all()
+        
         return {sentiment: count for sentiment, count in results}
 
 
