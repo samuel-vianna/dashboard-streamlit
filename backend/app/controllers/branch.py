@@ -4,27 +4,28 @@ from app.schemas.branch import BranchCreate, BranchRead, BranchUpdate
 from app.services.database import get_session
 from app.usecases.branch import BranchUseCase
 from typing import List
+from app.utils.security import get_current_user
 
 router = APIRouter(prefix="/branches", tags=["branches"])
 
 useCase = BranchUseCase()
 
 @router.post("/", response_model=BranchRead)
-def create(item: BranchCreate, session: Session = Depends(get_session)):
+def create(item: BranchCreate, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     return useCase.create_branch(session, item)
 
 @router.get("/", response_model=List[BranchRead])
-def read(session: Session = Depends(get_session)):
+def read(session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     return useCase.get_branches(session)
 
 @router.get("/{id}", response_model=BranchRead)
-def read_by_id(id: int, session: Session = Depends(get_session)):
+def read_by_id(id: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     return useCase.get_branch_by_id(session, id)
     
 @router.put("/{id}", response_model=BranchRead)
-def update(id: int, data: BranchUpdate, session: Session = Depends(get_session)):
+def update(id: int, data: BranchUpdate, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     return useCase.update_branch(session, id, data)
 
 @router.delete("/{id}")
-def delete(id: int, session: Session = Depends(get_session)):
+def delete(id: int, session: Session = Depends(get_session), current_user=Depends(get_current_user)):
     return useCase.delete_branch(session, id)

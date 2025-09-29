@@ -1,11 +1,5 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_branches_crud():
+def test_branches_crud(auth_client):
+    client = auth_client
     # create
     res = client.post("/branches/", json={"name": "Loja Test"})
     assert res.status_code == 200

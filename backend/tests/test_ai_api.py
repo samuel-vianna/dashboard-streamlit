@@ -1,10 +1,5 @@
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-# def test_ai_generate():
+# def test_ai_generate(auth_client):
+#     client = auth_client
 #     payload = {
 #             "type": "nps",
 #             "amount": 3,
@@ -20,7 +15,8 @@ client = TestClient(app)
 #     assert isinstance(data["items"], list)
 
 
-# def test_ai_categorize():
+# def test_ai_categorize(auth_client):
+#     client = auth_client
 #     res = client.post("/ai/categorize", json={})
 #     assert res.status_code == 200
 #     assert res.json()["message"] == "Feedback categorized successfully."

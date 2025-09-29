@@ -2,6 +2,13 @@ from datetime import datetime, timedelta
 import os
 from passlib.context import CryptContext
 import jwt
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from typing import Optional
+
+from app.services.database.database import get_session
+from app.repositories.user import UserRepository
+from sqlmodel import Session
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -32,3 +39,22 @@ def create_access_token(subject: str, expires_delta: timedelta | None = None) ->
 
 def decode_access_token(token: str) -> dict:
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)):
+    try:
+        payload = decode_access_token(token)
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid authentication token")
+
+    repo = UserRepository()
+    user = repo.get_by_id(session, int(user_id))
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user

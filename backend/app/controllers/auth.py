@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from app.services.database.database import get_session
 from app.schemas.user import UserCreate, LoginInput, Token
@@ -20,8 +21,8 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
 
 
 @router.post("/login", response_model=Token)
-def login(data: LoginInput, session: Session = Depends(get_session)):
-    user = useCase.authenticate_user(session, data.username, data.password)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    user = useCase.authenticate_user(session, form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = useCase.create_token_for_user(user)
