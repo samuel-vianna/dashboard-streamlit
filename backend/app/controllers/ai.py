@@ -16,8 +16,3 @@ def generate_feedback(data: FeedbackCreateInput, session: Session = Depends(get_
 @router.post("/analyze")
 def analyze_feedback(data: AIAnalyzeInput, session: Session = Depends(get_session)):
     return useCase.analyze_feedback(data)
-
-@router.post("/categorize")
-def categorize_feedback(session: Session = Depends(get_session)):
-    return useCase.categorize_feedback(session)
-    
