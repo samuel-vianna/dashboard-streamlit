@@ -16,7 +16,7 @@ def filter(service: BranchService):
             "Filial",
             branch_options,
             index=None,
-            placeholder="Selecione uma cidade...",
+            placeholder="Selecione uma filial...",
             format_func=lambda b: b["name"] if b else "",
             key="branch")
         

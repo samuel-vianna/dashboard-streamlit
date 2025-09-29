@@ -1,6 +1,8 @@
 from typing import TypeVar, Generic, Type, List, Optional
 from fastapi import HTTPException
 from sqlmodel import SQLModel, Session, select, update, case
+from sqlalchemy.exc import IntegrityError
+
 
 T = TypeVar("T", bound=SQLModel)
 
@@ -21,10 +23,19 @@ class BaseRepository(Generic[T]):
             raise HTTPException(status_code=404, detail=f"{self.name} not found")
 
     def create(self, session: Session, item: T) -> T:
-        session.add(item)
-        session.commit()
-        session.refresh(item)
-        return item
+        try:
+            session.add(item)
+            session.commit()
+            session.refresh(item)
+            return item
+
+        except IntegrityError as e:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=f"Conflito: {str(e.orig)}")
+
+        except Exception as e:
+            session.rollback()
+            raise HTTPException(status_code=400, detail=f"Erro ao criar item: {str(e)}")
     
     def create_many(self, session: Session, items: List[T]) -> List[T]:
         session.add_all(items)
