@@ -32,7 +32,7 @@ class AIUseCase:
             raise HTTPException(status_code=400, detail="Tipo de feedback inválido")
         
         # update data using selected feedback
-        items = [FeedbackClass(**item.dict() if hasattr(item, "dict") else item) for item in response]
+        items = [FeedbackClass(**item.model_dump() if hasattr(item, "dict") else item) for item in response]
         saved_items = feedback_repo.create_many(session, items)
         
         
