@@ -1,4 +1,4 @@
-from app.schemas.ai import FeedbackCreateInput, AIFeedbackOutputResponse
+from app.schemas.ai import FeedbackCreateInput, AIFeedbackOutputResponse, AIAnalyzeInput, AIAnalyzeOutputResponse
 from app.services.llm import LLMService
 from fastapi import HTTPException
 
@@ -19,6 +19,7 @@ class AiRepository():
                 "Se houver data de envio, os comentários devem ser gerados com datas anteriores a essa data.\n"
                 "Os comentários gerados deve possuir origens variadas.\n"
                 "Se não houver, invente comentários plausíveis."
+                "A resposta deve possuir no máximo de 300 caracteres."
             )
             
             user_prompt = ("user", "Contexto: {context}, data de envio: {date}, branch_id: {branch_id}")
@@ -43,24 +44,34 @@ class AiRepository():
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
         
 
-    def analyze(self):
+    def analyze(self, data: AIAnalyzeInput):
         try: 
-            # prompt = [
-            # ('system', 'Você é um assistente de uma empresa de marketing digital.'),
-            # ('user', '{input}'),
-            #  ]
-            # class AnalysisResult(BaseModel):
-            #     resposta: str = Field(description="Resposta")
-            #     materia: str = Field(description="materia escolar usada na pergunta")
+            system_prompt = (
+                "Você é um assistente especializado em análise de feedback.\n"
+                "Sua tarefa é analisar os dados fornecidos de NPS e CSAT e gerar um texto resumido que contenha:\n"
+                "  - Um resumo geral sobre as notas e desempenho.\n"
+                "  - O que acha dos resultados.\n"
+                "  - Pontos de atenção (o que pode melhorar).\n"
+                "  - Aspectos positivos identificados.\n"
+                "  - Aspectos negativos identificados.\n\n"
+                " - Analise os dados em 'details' para gerar insights específicos por origem e período.\n"
+            )
 
-            # input = {"input": "qual os gases nobres?"}
             
-            # return self.service.request(prompt, AnalysisResult, input)
-            return 'To do...'
+            user_prompt = ("user", "nps: {nps}, csat: {csat}")
+            
+            prompt = [
+                ("system", system_prompt),
+                user_prompt
+            ]
+            
+            input = {"nps": data.nps_data, "csat": data.csat_data}
+
+            return self.service.request(prompt, AIAnalyzeOutputResponse, input)
         except Exception as e:
             print(e)
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
-      
+        
 
     def categorize(self):
         print('To do...')
