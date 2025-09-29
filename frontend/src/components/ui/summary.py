@@ -16,7 +16,7 @@ def summary(service: FeedbackService, title: str):
     # Pegar dados da API
     # ------------------------------
     
-    # Brandh
+    # Branch
     branch = st.session_state.get("branch", None)
     branch_id = branch["id"] if branch else None
     
@@ -71,7 +71,16 @@ def summary(service: FeedbackService, title: str):
             
             container = st.container(horizontal=True)
             with container:
-                barChart(data, f'bar_chart_{title}')     
+                df = pd.DataFrame(data["details"])
+
+                barChart(
+                    data=df,
+                    key=f"bar_chart_{title}",
+                    title="Totais por Origem",
+                    x_col="origin",
+                    y_col="total",
+                    color="steelblue"
+                )                
             
         else:
             st.write("Sem dados disponíveis para os filtros selecionados.")

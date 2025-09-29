@@ -25,6 +25,22 @@ class FeedbackService:
     def get_all(self):
         return requests.get(self.api_url).json()
     
+    def get_sentiments(
+        self,
+        branch_id: Optional[int] = None,
+        origin: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+        ):
+        params = {
+            "branch_id": branch_id,
+            "origin": origin,
+            "start_date": start_date,
+            "end_date": end_date
+        }
+        
+        return requests.get(f'{self.api_url}/summary/sentiments', params=params).json()
+    
     def get_summary(
         self,
         branch_id: Optional[int] = None,

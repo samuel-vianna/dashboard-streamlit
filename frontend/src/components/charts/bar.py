@@ -1,47 +1,61 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from services.feedback import SummaryData
+from typing import Optional
 
 
-def barChart(data: SummaryData, key: str = "stacked_bar_chart"):
-    # Transformar detalhes em DataFrame
-    df = pd.DataFrame(data["details"])
+def barChart(
+    data: Optional[pd.DataFrame] = None,
+    key: str = "stacked_bar_chart",
+    title: str = "Totais por Origem",
+    x_col: str = "origin",
+    y_col: str = "total",
+    label_col: Optional[str] = None,
+    color: str = "steelblue"
+):
+    if data is None or data.empty:
+        st.write("Nenhum dado disponível para o gráfico.")
+        return
+
+    df = data.copy()
 
     # Garantir valores
-    df["origin"] = df["origin"].fillna("Indefinido")
-    df["total"] = df["total"].fillna(0)
+    df[x_col] = df[x_col].fillna("Indefinido")
+    df[y_col] = df[y_col].fillna(0)
 
-    # Agrupar por origem e somar totais
-    df_grouped = df.groupby("origin", as_index=False)["total"].sum()
+    # Agrupar por coluna X e somar Y
+    df_grouped = df.groupby(x_col, as_index=False)[y_col].sum()
 
     # Ordenar do maior para o menor
-    df_grouped = df_grouped.sort_values(by="total", ascending=False)
+    df_grouped = df_grouped.sort_values(by=y_col, ascending=False)
 
     # Calcular porcentagem
-    total_sum = df_grouped["total"].sum() or 1
-    df_grouped["percentage"] = df_grouped["total"] / total_sum * 100
+    total_sum = df_grouped[y_col].sum() or 1
+    df_grouped["percentage"] = df_grouped[y_col] / total_sum * 100
 
     # Criar labels
-    df_grouped["label"] = df_grouped.apply(lambda row: f"{row.total} ({row.percentage:.1f}%)", axis=1)
+    if label_col:
+        df_grouped["label"] = df_grouped[label_col]
+    else:
+        df_grouped["label"] = df_grouped.apply(lambda row: f"{row[y_col]} ({row.percentage:.1f}%)", axis=1)
 
     # Criar gráfico
     fig_bar = go.Figure(
         data=[
             go.Bar(
-                x=df_grouped["origin"],
-                y=df_grouped["total"],
+                x=df_grouped[x_col],
+                y=df_grouped[y_col],
                 text=df_grouped["label"],
                 textposition="auto",
-                marker_color="steelblue",
+                marker_color=color,
             )
         ]
     )
 
     fig_bar.update_layout(
-        xaxis=dict(title="Origem"),
-        yaxis=dict(title="Total"),
-        title="Totais por Origem",
+        xaxis=dict(title=x_col.capitalize()),
+        yaxis=dict(title=y_col.capitalize()),
+        title=title,
     )
 
     st.plotly_chart(fig_bar, use_container_width=True, key=key)

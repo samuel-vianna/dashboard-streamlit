@@ -36,3 +36,7 @@ def test_nps_score():
 def test_nps_summary():
     res = client.get("/nps/summary")
     assert res.status_code == 200
+    
+def test_nps_summary_sentiments():
+    res = client.get("/nps/summary/sentiments")
+    assert res.status_code == 200

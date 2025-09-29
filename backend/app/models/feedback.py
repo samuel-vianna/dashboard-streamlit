@@ -23,4 +23,5 @@ class Feedback(SQLModel):
     comment: Optional[str] = None
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     origin: Optional[Origin] = None
+    sentiment: Optional[str] = None
     

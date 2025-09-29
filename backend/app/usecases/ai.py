@@ -1,14 +1,12 @@
 from sqlmodel import Session
 from fastapi import HTTPException
-from app.schemas.ai import FeedbackCreateInput
+from app.schemas.ai import FeedbackCreateInput, AIAnalyzeInput
 from app.repositories.ai import AiRepository
-from typing import Dict, Literal
-
 from app.repositories.nps import NPSRepository
-from app.models.nps import NPSFeedback
-
 from app.repositories.csat import CSATRepository
 from app.models.csat import CSATFeedback
+from app.models.nps import NPSFeedback
+from app.utils.categorize_comments import categorize_comments
 
 class AIUseCase:
     def __init__(self):
@@ -32,7 +30,7 @@ class AIUseCase:
             raise HTTPException(status_code=400, detail="Tipo de feedback inválido")
         
         # update data using selected feedback
-        items = [FeedbackClass(**item.dict() if hasattr(item, "dict") else item) for item in response]
+        items = [FeedbackClass(**item.model_dump() if hasattr(item, "dict") else item) for item in response]
         saved_items = feedback_repo.create_many(session, items)
         
         
@@ -40,10 +38,36 @@ class AIUseCase:
                 'total': len(saved_items),
                 'items': saved_items}
 
-    def analyze_feedback(self,data: Dict):
+    def analyze_feedback(self,data: AIAnalyzeInput):
         feedback = self.repository.analyze(data)
         return feedback
 
-    def categorize_feedback(self, session: Session, data: Dict):
-        self.repository.categorize()
-        return {"message": "Feedback categorized successfully."}
+    def categorize_feedback(self, session: Session):
+        
+        # ------------------------------
+        # NPS
+        # ------------------------------
+        nps_response = categorize_comments(
+            session=session,
+            repository=self.nps_repository,
+            categorize_fn=self.repository.categorize, 
+            limit=50,
+            field="sentiment"
+        )
+            
+        # ------------------------------
+        # CSAT
+        # ------------------------------
+        csat_response = categorize_comments(
+            session=session,
+            repository=self.csat_repository,
+            categorize_fn=self.repository.categorize,
+            limit=50,
+            field="sentiment"
+            )
+        
+        return {
+            "message": f"{nps_response + csat_response} Comentário(s) categorizados com successo!",
+            "nps": nps_response,
+            "csat": csat_response
+            }

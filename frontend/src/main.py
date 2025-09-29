@@ -4,7 +4,8 @@ from services.branch import BranchService
 from services.ai import AIService
 from components.ui.summary import summary
 from components.ui.filter import filter
-from time import sleep
+from layouts.home.aiSummary import AISummaryTab
+from layouts.home.sentiments import SentimentsTab
 
 # Services
 nps_service = FeedbackService('nps')
@@ -26,7 +27,7 @@ filter(branch_service)
 # ------------------------------
 # Tabs
 # ------------------------------
-tab1, tab2, tab3 = st.tabs(["NPS", "CSAT", "Resumo com IA"])
+tab1, tab2, tab3, tab4 = st.tabs(["NPS", "CSAT", "Análise de comentários", "Resumo com IA",])
 
 with tab1:
     summary(nps_service, "NPS")
@@ -34,33 +35,8 @@ with tab1:
 with tab2:
     summary(csat_service, "CSAT")
 
-# ------------------------------
-# Resumo com IA
-# ------------------------------
-with tab3:    
-    st.subheader("🤖 Resumo com IA")
-    
-    st.write(f"Resumo gerado com inteligência artificial a partir dos dados obtidos.")
-    
-    # Feedback gerado com IA
-    with st.spinner("Gerando feedback com inteligência artificial…"):
-        nps_data = st.session_state.get("nps_data", None)
-        csat_data = st.session_state.get("csat_data", None)
-        feedback = ai_service.generate_feedback(nps_data, csat_data)
-        print(feedback)
-        
-    try:
-        feedbackMessage = feedback.get("summary") if feedback else "Sem feedback gerado."
-    except Exception:
-        feedbackMessage = "Erro ao gerar feedback."
-    
-    def stream_data():
-        for word in feedbackMessage.split(" "):
-            yield word + " "
-            sleep(0.02)
+with tab3:
+    SentimentsTab(nps_service, csat_service)
 
-
-        for word in feedbackMessage.split(" "):
-            yield word + " "
-    
-    st.write_stream(stream_data)
+with tab4:    
+    AISummaryTab(ai_service)

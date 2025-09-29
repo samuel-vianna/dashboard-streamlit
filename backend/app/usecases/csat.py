@@ -38,6 +38,16 @@ class CSATUseCase:
     def delete_csat(self, session: Session, id: int):
         self.repository.delete(session, id)
         return True
+    
+    def get_sentiments_summary(
+          self,
+        session: Session,
+        branch_id: Optional[int] = None,
+        origin: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+        ):
+        return self.repository.get_sentiment_count(session, branch_id, origin, start_date, end_date)
 
     def get_summary(
         self,
