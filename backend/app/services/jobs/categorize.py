@@ -1,5 +1,6 @@
 import logging
 from typing import Optional
+import os
 
 try:
     from apscheduler.schedulers.background import BackgroundScheduler
@@ -27,7 +28,7 @@ def _run_categorize():
         logger.exception(f"Error running categorize job: {e}")
 
 
-def start_scheduler():
+def start_categorize_scheduler():
     global scheduler
     if BackgroundScheduler is None:
         logger.warning("APScheduler not installed; scheduler will not run.")
@@ -40,17 +41,18 @@ def start_scheduler():
     if scheduler.get_job("categorize_feedback"):
         scheduler.remove_job("categorize_feedback")
 
+    scheduler_interval = os.getenv("SCHEDULER_INTERVAL", 1)
     scheduler.add_job(
         _run_categorize,
-        IntervalTrigger(minutes=1),
+        IntervalTrigger(minutes=scheduler_interval),
         id="categorize_feedback",
         replace_existing=True
     )
     scheduler.start()
-    logger.info("Scheduler started — job 'categorize_feedback' running every 1 minute")
+    logger.info(f"Scheduler started — job 'categorize_feedback' running every {scheduler_interval} minute")
 
 
-def stop_scheduler():
+def stop_categorize_scheduler():
     global scheduler
     if scheduler is None:
         return

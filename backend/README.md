@@ -92,7 +92,8 @@ cp .env.example .env
 │   ├── schemas/         # Schemas Pydantic (validação/serialização)
 │   ├── services/        # Serviços e lógica de negócio
 │   ├── usecases/        # Casos de uso específicos (funções usadas pelos controllers)
-│   └── utils/           # Utilitários
+│   └── utils/      
+├── scripts     # Arquivos para popular banco de dados
 ├── requirements.txt
 ├── tests/               # Testes unitários e de integração
 └── venv/                # Ambiente virtual
