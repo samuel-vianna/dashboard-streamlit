@@ -1,18 +1,16 @@
-# Usar imagem base do Python
-FROM python:3.11-slim
+FROM python:3.13-slim
 
-# Criar diretório de trabalho
 WORKDIR /app
 
-# Copiar dependências e instalar
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código da aplicação
 COPY ./app /app
+COPY ./scripts /app/scripts
+COPY entrypoint.sh /app/entrypoint.sh
 
-# Expor porta do FastAPI
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
-# Comando para rodar o servidor
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["/app/entrypoint.sh"]

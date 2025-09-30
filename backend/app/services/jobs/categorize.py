@@ -41,7 +41,7 @@ def start_categorize_scheduler():
     if scheduler.get_job("categorize_feedback"):
         scheduler.remove_job("categorize_feedback")
 
-    scheduler_interval = os.getenv("SCHEDULER_INTERVAL", 1)
+    scheduler_interval = int(os.getenv("SCHEDULER_INTERVAL", 1))
     scheduler.add_job(
         _run_categorize,
         IntervalTrigger(minutes=scheduler_interval),

@@ -16,7 +16,7 @@ def seed():
         # Criar usuário admin se não existir
         existing = db.query(User).filter_by(username="admin").first()
         if not existing:
-            db.add(User(username="admin", password="admin"))
+            db.add(User(username="admin", password="$2b$12$6plSiqZo6O3H57IT/mCTAOh3EfAA6w/B96pvFXCT7LN2NvVfAvkDS"))
 
         # Criar branches iniciais se não existirem
         for name in ("Filial A", "Filial B"):
@@ -27,5 +27,3 @@ def seed():
     print("✅ Seed concluído!")
 
 
-if __name__ == "__main__":
-    seed()
