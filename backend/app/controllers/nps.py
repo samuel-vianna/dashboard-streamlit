@@ -33,7 +33,7 @@ def read(
 ):
     return useCase.get_summary(session, branch_id, origin, period, start_date, end_date)
 
-@router.get("/summary/sentiments", response_model=dict[str, int])
+@router.get("/summary/sentiments")
 def read(
     branch_id: Optional[int] = Query(None, description="ID da branch para filtro"),
     origin: Optional[Origin] = Query(None, description="Origem do atendimento para filtro"),
