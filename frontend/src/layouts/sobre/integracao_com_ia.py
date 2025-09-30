@@ -32,3 +32,17 @@ def AboutIntegrationTab():
             - Presencial
         """
     )
+    
+    st.subheader("Melhorias para o futuro")
+    
+    st.write(
+        """
+        Atualmente, o modelo de IA utilizado é o **Google Gemini**.  
+        A arquitetura foi pensada para facilitar a adição de **novos modelos** no futuro.
+        
+        Além disso, os serviços responsávis por gerar a massa de dados e categoziar
+        os comentários de acordo com o sentimento estão rodando junto com o backend.
+        Uma possível melhoria seria rodar esses serviços de forma separada, evitando
+        de sobrecarregar o backend.
+        """
+    )
