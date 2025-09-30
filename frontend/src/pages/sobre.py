@@ -1,5 +1,8 @@
 
 import streamlit as st
+from components.ui.authRoute import AuthRoute
+
+AuthRoute()
 
 st.title("ℹ Sobre este projeto")
 st.write("""

@@ -1,11 +1,5 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_users_crud():
+def test_users_crud(auth_client):
+    client = auth_client
     # create
     res = client.post("/users/", json={"username": "u1", "password": "p"})
     assert res.status_code == 200

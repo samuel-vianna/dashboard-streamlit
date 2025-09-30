@@ -8,3 +8,13 @@ class UserCreate(SQLModel):
 class UserRead(SQLModel):
     id: int
     username: str
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class LoginInput(SQLModel):
+    username: str
+    password: str

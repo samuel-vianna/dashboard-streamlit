@@ -1,11 +1,5 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_nps_crud():
+def test_nps_crud(auth_client):
+    client = auth_client
     # create
     res = client.post("/nps/", json={"score": 8, "comment": "good"})
     assert res.status_code == 200
@@ -28,15 +22,18 @@ def test_nps_crud():
     assert res.status_code == 200
 
 
-def test_nps_score():
+def test_nps_score(auth_client):
+    client = auth_client
     res = client.post("/nps/", json={"score": 11, "comment": "good"})
     assert res.status_code == 400
     assert res.json()["detail"] == "NPS score must be between 0 and 10."
     
-def test_nps_summary():
+def test_nps_summary(auth_client):
+    client = auth_client
     res = client.get("/nps/summary")
     assert res.status_code == 200
     
-def test_nps_summary_sentiments():
+def test_nps_summary_sentiments(auth_client):
+    client = auth_client
     res = client.get("/nps/summary/sentiments")
     assert res.status_code == 200

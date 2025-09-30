@@ -12,9 +12,10 @@ def AISummaryTab(ai_service: AIService):
         nps_data = st.session_state.get("nps_data", None)
         csat_data = st.session_state.get("csat_data", None)
         feedback = ai_service.analyze_feedback(nps_data, csat_data)
+        print(feedback)
         
     try:
-        feedbackMessage = feedback.get("summary") if feedback else "Sem feedback gerado."
+        feedbackMessage = feedback.get("summary") if feedback and "summary" in feedback else "Sem feedback gerado."
     except Exception:
         feedbackMessage = "Erro ao gerar feedback."
     

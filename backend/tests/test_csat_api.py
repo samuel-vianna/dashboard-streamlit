@@ -1,11 +1,5 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_csat_crud():
+def test_csat_crud(auth_client):
+    client = auth_client
     # create
     res = client.post("/csat/", json={"score": 3, "comment": "ok"})
     assert res.status_code == 200
@@ -28,15 +22,18 @@ def test_csat_crud():
     assert res.status_code == 200
 
 
-def test_csat_score():
+def test_csat_score(auth_client):
+    client = auth_client
     res = client.post("/csat/", json={"score": 6, "comment": "good"})
     assert res.status_code == 400
     assert res.json()["detail"] == "CSAT score must be between 1 and 5."
     
-def test_csat_summary():
+def test_csat_summary(auth_client):
+    client = auth_client
     res = client.get("/csat/summary")
     assert res.status_code == 200
     
-def test_csat_summary_sentiments():
+def test_csat_summary_sentiments(auth_client):
+    client = auth_client
     res = client.get("/csat/summary/sentiments")
     assert res.status_code == 200
