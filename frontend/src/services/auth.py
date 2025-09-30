@@ -1,8 +1,12 @@
 from typing import Optional
 import requests
 import streamlit as st
+from dotenv import load_dotenv
+import os
 
-API_URL = "http://localhost:8000"
+load_dotenv()
+
+API_URL: str = os.getenv("API_URL", "http://localhost:8000")
 
 class AuthService:
 
