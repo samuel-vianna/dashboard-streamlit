@@ -67,7 +67,7 @@ def start_generate_scheduler():
     if scheduler.get_job("generate_feedback"):
         scheduler.remove_job("generate_feedback")
 
-    scheduler_interval = os.getenv("SCHEDULER_INTERVAL", 1)
+    scheduler_interval = int(os.getenv("SCHEDULER_INTERVAL", 1))
     scheduler.add_job(
         _run_generate,
         IntervalTrigger(minutes=scheduler_interval),

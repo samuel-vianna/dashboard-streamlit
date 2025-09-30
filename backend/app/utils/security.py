@@ -4,7 +4,6 @@ from passlib.context import CryptContext
 import jwt
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from typing import Optional
 
 from app.services.database.database import get_session
 from app.repositories.user import UserRepository
