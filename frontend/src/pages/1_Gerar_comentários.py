@@ -9,7 +9,7 @@ branch_service = BranchService()
 
 AuthRoute()
 
-st.title("🤖 Gerar Feedback com IA")
+st.title("🤖 Gerar Comentários com IA")
 
 st.write("Utilize essa página para gerar novos dados de feedback com inteligência artificial. Você pode escolher o tipo de feedback e a quantidade de feedbacks a serem gerados.")
 

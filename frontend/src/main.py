@@ -14,7 +14,6 @@ csat_service = FeedbackService('csat')
 branch_service = BranchService()
 ai_service = AIService()
 
-
 # Configuração geral
 st.set_page_config(page_title="Dashboard Streamlit", layout="wide")
 
