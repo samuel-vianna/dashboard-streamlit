@@ -1,8 +1,11 @@
 import requests
 from .auth import AuthService
+from dotenv import load_dotenv
+import os
 
-API_URL = "http://localhost:8000"
+load_dotenv()
 
+API_URL: str = os.getenv("API_URL", "http://localhost:8000")
 
 class AIService:
     def __init__(self):

@@ -40,7 +40,6 @@ class AiRepository():
 
             return self.service.request(prompt, AIFeedbackOutputResponse, input)
         except Exception as e:
-            print(e)
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
         
 
@@ -69,7 +68,6 @@ class AiRepository():
 
             return self.service.request(prompt, AIAnalyzeOutputResponse, input)
         except Exception as e:
-            print(e)
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
         
 
@@ -103,6 +101,5 @@ class AiRepository():
 
             return self.service.request(prompt, AICategorizeOutputResponse, input)
         except Exception as e:
-            print(e)
             raise HTTPException(status_code=400, detail=f"Erro ao executar IA: {e}")
     

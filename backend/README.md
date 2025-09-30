@@ -1,48 +1,109 @@
 # Backend (FastAPI)
 
-Instruções para instalar e testar localmente o serviço backend (FastAPI).
+Este é o serviço **backend** desenvolvido em **FastAPI**.
+Aqui estão as instruções para rodar o projeto **localmente**.
 
-## Requisitos
+---
 
-- Docker & Docker Compose (ou Docker CLI com suporte `docker compose`)
-- Python 3.11 (se for executar sem Docker)
-- Git (opcional)
+## 📦 Requisitos
 
-Arquivos relevantes:
+* **Python 3.13**
 
-- [docker-compose.yaml](../docker-compose.yaml)
-- [Dockerfile](./Dockerfile)
-- [requirements.txt](./requirements.txt)
-- Código da API: [`main.app`](./app/main.py) / [`main.read_root`](./app/main.py)
+Arquivos principais:
 
-## Rodar com Docker Compose
+* [`docker-compose.yaml`](../docker-compose.yaml)
+* [`Dockerfile`](./Dockerfile)
+* [`requirements.txt`](./requirements.txt)
+* API principal: [`app/main.py`](./app/main.py)
 
-## Rodar localmente
+---
 
-- Criar e ativar um ambiente virtual Python
+## ▶️ Rodando o projeto
 
-```bash
-python -m venv venv
-source venv/bin/activate
-```
+### 1. Subir o banco de dados
 
-- Instalar as dependências
+Antes de iniciar o backend, é necessário subir o banco.
+Na pasta `database`, execute:
 
 ```bash
-pip install -r requirements.txt
-
-pip freeze > requirements.txt # copiar arquivos para dependências
-
+cd ../database
+docker compose up -d
 ```
 
-- Rodar o servidor
+Isso irá iniciar o banco de dados em contêiner.
+
+---
+
+### 2. Configurar variáveis de ambiente
+
+O projeto utiliza variáveis de ambiente para configurar itens como a conexão com o banco.
+
+Na raiz do projeto existe um arquivo `.env.example`.
+Você deve copiá-lo para `.env` e ajustar os valores conforme sua necessidade:
 
 ```bash
-fastapi dev app/main.py
+cp .env.example .env
 ```
 
-- Testar
+---
+
+### 3. Rodar o backend localmente
+
+1. Criar e ativar um ambiente virtual:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+2. Instalar as dependências:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Subir o servidor:
+
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+4. Testar:
+
+   ```bash
+   curl http://localhost:8000/
+   ```
+
+---
+
+## 📂 Estrutura de Pastas
 
 ```bash
-curl http://localhost:8000/
+.
+├── Dockerfile
+├── README.md
+├── app
+│   ├── __init__.py
+│   ├── config/          # Configurações gerais
+│   ├── controllers/     # Controllers (rotas)
+│   ├── main.py          # Ponto de entrada da aplicação
+│   ├── models/          # Modelos do banco de dados (SQLAlchemy)
+│   ├── repositories/    # Acesso a dados
+│   ├── schemas/         # Schemas Pydantic (validação/serialização)
+│   ├── services/        # Serviços e lógica de negócio
+│   ├── usecases/        # Casos de uso específicos (funções usadas pelos controllers)
+│   └── utils/           # Utilitários
+├── requirements.txt
+├── tests/               # Testes unitários e de integração
+└── venv/                # Ambiente virtual
 ```
+
+## Adicionando novos modelos de LLM
+
+Para adicionar novos modelos de LLM, siga os seguintes passos:
+
+- Vá ao arquivo `backend/app/services/llm/llm_client.py`
+- Adicione um novo case para o cliente de LLM que você deseja utilizar
+- Faça a configuração necessária para o cliente
+- Adicione as dependências necessárias no arquivo `backend/requirements.txt`
+- Teste o novo cliente

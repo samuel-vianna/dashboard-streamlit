@@ -2,8 +2,12 @@ import requests
 from .auth import AuthService
 from typing import TypedDict, Optional, Literal
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 
-API_URL = "http://localhost:8000"
+load_dotenv()
+
+API_URL: str = os.getenv("API_URL", "http://localhost:8000")
 
 class SummaryInfo(TypedDict):
     total: int
